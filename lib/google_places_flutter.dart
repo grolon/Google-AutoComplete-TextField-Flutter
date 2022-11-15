@@ -23,6 +23,8 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
   List<String>? countries = [];
   TextEditingController textEditingController = TextEditingController();
 
+  String proxy;
+
   GooglePlaceAutoCompleteTextField(
       {required this.textEditingController,
       required this.googleAPIKey,
@@ -33,6 +35,7 @@ class GooglePlaceAutoCompleteTextField extends StatefulWidget {
       this.textStyle: const TextStyle(),
       this.countries,
       this.getPlaceDetailWithLatLng,
+      this.proxy = '',
       });
 
   @override
@@ -67,6 +70,10 @@ class _GooglePlaceAutoCompleteTextFieldState
     Dio dio = new Dio();
     String url =
         "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$text&key=${widget.googleAPIKey}";
+
+    if(widget.proxy != '') {
+      url = widget.proxy + Uri.encodeComponent(url);
+    }
 
     if (widget.countries != null) {
       // in
@@ -178,6 +185,11 @@ class _GooglePlaceAutoCompleteTextFieldState
 
     var url =
         "https://maps.googleapis.com/maps/api/place/details/json?placeid=${prediction.placeId}&key=${widget.googleAPIKey}";
+
+    if(widget.proxy != '') {
+      url = widget.proxy + Uri.encodeComponent(url);
+    }
+
     Response response = await Dio().get(
       url,
     );
